@@ -89,7 +89,7 @@ function createMiniMapTransform(value) {
  * @returns {{x: number, y: number}}
  */
 function createViewportCenterPoint(panZoomView) {
-    const visibleBounds = panZoomView.getVisibleBounds();
+    const visibleBounds = panZoomView.getViewportBounds();
 
     return Object.freeze({
         x: visibleBounds.x + (visibleBounds.width / 2),
@@ -105,7 +105,7 @@ function createViewportCenterPoint(panZoomView) {
  * @returns {{x: number, y: number, width: number, height: number}}
  */
 function createViewportRect(panZoomView, miniMapTransform) {
-    const visibleBounds = panZoomView.getVisibleBounds();
+    const visibleBounds = panZoomView.getViewportBounds();
 
     return Object.freeze({
         x: miniMapTransform.translateX + (visibleBounds.x * miniMapTransform.zoomToFit),
