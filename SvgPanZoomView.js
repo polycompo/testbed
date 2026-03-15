@@ -65,31 +65,32 @@ export default class SvgPanZoomView {
         return roundToSingleDecimal(this.scaleFactor * PERCENT_MULTIPLIER);
     }
 
-    getVisibleBounds() {
+    getViewportBounds() {
         const unclampedX = (VIEWER_ORIGIN - this.translationX) / this.scaleFactor;
         const unclampedY = (VIEWER_ORIGIN - this.translationY) / this.scaleFactor;
         const visibleWidth = this.viewerWidth / this.scaleFactor;
         const visibleHeight = this.viewerHeight / this.scaleFactor;
-        const maxVisibleX = Math.max(this.svgMinX, this.svgMinX + this.svgWidth - visibleWidth);
-        const maxVisibleY = Math.max(this.svgMinY, this.svgMinY + this.svgHeight - visibleHeight);
 
         return Object.freeze({
-            x: roundToSingleDecimal(clamp(unclampedX, this.svgMinX, maxVisibleX)),
-            y: roundToSingleDecimal(clamp(unclampedY, this.svgMinY, maxVisibleY)),
+            x: roundToSingleDecimal(unclampedX),
+            y: roundToSingleDecimal(unclampedY),
             width: roundToSingleDecimal(visibleWidth),
             height: roundToSingleDecimal(visibleHeight),
         });
     }
 
-    getSummary() {
-        const bounds = this.getVisibleBounds();
+    getVisibleBounds() {
+        const viewportBounds = this.getViewportBounds();
+        const visibleWidth = viewportBounds.width;
+        const visibleHeight = viewportBounds.height;
+        const maxVisibleX = Math.max(this.svgMinX, this.svgMinX + this.svgWidth - visibleWidth);
+        const maxVisibleY = Math.max(this.svgMinY, this.svgMinY + this.svgHeight - visibleHeight);
 
         return Object.freeze({
-            zoomPercent: this.getZoomPercent(),
-            x: bounds.x,
-            y: bounds.y,
-            width: bounds.width,
-            height: bounds.height,
+            x: roundToSingleDecimal(clamp(viewportBounds.x, this.svgMinX, maxVisibleX)),
+            y: roundToSingleDecimal(clamp(viewportBounds.y, this.svgMinY, maxVisibleY)),
+            width: viewportBounds.width,
+            height: viewportBounds.height,
         });
     }
 }
